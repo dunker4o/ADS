@@ -83,7 +83,10 @@ public class Heap <E extends Comparable<E>> {
 		String s = "[";
 		if(!isEmpty()){
 			int i = 1;
-			while(i != last) s = s + H[i] + ","; i++;
+			while(i != last){
+				s = s + H[i] + ",";
+				i++;
+			}
 			s = s + H[last];
 		}
 		s = s + "]";
@@ -96,14 +99,14 @@ public class Heap <E extends Comparable<E>> {
     // 
 	
 	private boolean hasLeft(int pos){
-		return pos*2 <= capacity+1;
+		return pos*2 <= last;
 	}
 	//
 	//	Checks if the hode has a left child
 	//
 	
 	private boolean hasRight(int pos){
-		return pos*2+1 <= capacity+1;
+		return pos*2+1 <= last;
 	}
 	//
 	// Checks if the node has a right child
@@ -111,7 +114,7 @@ public class Heap <E extends Comparable<E>> {
 	
 	private void swap(int d,int t){
 		Object temp = H[d];
-		H[t] = H[d];
+		H[d] = H[t];
 		H[t] = temp;
 	}
 	//
@@ -120,7 +123,7 @@ public class Heap <E extends Comparable<E>> {
 	
 	private int getLeft(int pos){
 		if(hasLeft(pos)) return pos*2;
-		return 0;
+		return -1;
 	}
 	//
 	// Fetches the index of the left child. 
@@ -128,7 +131,7 @@ public class Heap <E extends Comparable<E>> {
 	
 	private int getRight(int pos){
 		if(hasRight(pos)) return pos*2+1;
-		return 0;
+		return -2;
 	}
 	//
 	//	Fetches the index of the right child.
@@ -142,8 +145,8 @@ public class Heap <E extends Comparable<E>> {
 	//
 	
 	private int lesser(int f, int s){
-		if(compare(H[f], H[s]) >= 0) return f;
-		return s;
+		if(compare(H[f], H[s]) >= 0) return s;
+		return f;
 	}
 	//
 	// Compares two indexes and returns the one which contains a lesser element.
@@ -152,13 +155,9 @@ public class Heap <E extends Comparable<E>> {
 	private void upHeapBubble(int i){
 		int index = i;													//	Starts the sorting from the provided index
 		while(index>1){													//	and continues until it reaches the root of the tree.
-			System.out.println(index);
-			if(compare(H[index], H[getParent(index)]) >= 0) return;		//	If the parent of the node is less than or equal, then we need not swap and we can quit.
-			System.out.println("Trying to swap...");
+			if(compare(H[index], H[getParent(index)]) >= 0) return;		//	If the child node is greater than or equal to the parent then we need not swap and we can quit.
 			swap(index, getParent(index));								//	Otherwise, swap them
-			System.out.println("Swapped.");
 			index = getParent(index);									//	and update the index.
-			System.out.println("New index is: " + index);
 		}
 	}
 	
@@ -168,12 +167,9 @@ public class Heap <E extends Comparable<E>> {
 		while (true){													//
 			if(hasLeft(index) && hasRight(index)){						//	If the node has two childs, find the one which has a lesser element
 				newIndex = lesser(getLeft(index), getRight(index));		//
-			}else if(!hasLeft(index)){									//	If it has only a right one, select that index
-				newIndex = getRight(index);								//
-			} else if(!hasRight(index)){								//  If it has only a left one, select that index
+			}else if(hasLeft(index)){									//	If it has only a right one, select that index
 				newIndex = getLeft(index);								//
 			} else return;												//	If it doesn't have any, return
-			
 			if(compare(H[index], H[newIndex]) < 0) return;				//	If the current node is less than the selected one, return
 			swap(index, newIndex);										//	otherwise swap them and update the index
 			index = newIndex;											//

@@ -38,7 +38,7 @@ public class Test {
 		if (command.equals("show")) System.out.println(H.toString());
 
 		System.out.println("size: "+ H.size() +" "+ H);
-
+		
 		System.out.print("> ");
 		command = sc.next();
 	    }
